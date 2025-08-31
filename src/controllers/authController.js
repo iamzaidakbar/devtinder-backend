@@ -1,8 +1,11 @@
 const User = require("../models/user");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 const handleError = require("../utils/handleError");
-const validateSignUpData = require("../utils/validateSignUpData");
-const validateSignInData = require("../utils/validateSignInData");
+const {
+  validateSignUpData,
+  validateSignInData,
+} = require("../utils/validation");
 
 // Signup
 exports.signup = async (req, res) => {
@@ -52,7 +55,7 @@ exports.login = async (req, res) => {
         .status(401)
         .json({ errors: { email: "Invalid email or password" } });
     }
-    const match = await bcrypt.compare(password, user.password);
+    const match = await user.comparePassword(password);
     if (!match) {
       return res
         .status(401)
@@ -67,8 +70,19 @@ exports.login = async (req, res) => {
       gender: user.gender,
       photoUrl: user.photoUrl,
     };
-    res.status(200).json({ message: "Login successful", user: userSafe });
+
+    const token = user.getJWT();
+    res.cookie("token", token);
+    res
+      .status(200)
+      .json({ message: "Login successful", user: userSafe, token });
   } catch (err) {
     handleError(res, err, "Login error");
   }
+};
+
+//logout
+exports.logout = (req, res) => {
+  res.clearCookie("token");
+  res.status(200).json({ message: "Logout successful" });
 };
