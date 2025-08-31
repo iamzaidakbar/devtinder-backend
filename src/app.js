@@ -1,4 +1,5 @@
 const express = require("express");
+require('dotenv').config();
 const { connectDB } = require("./utils/connectDB");
 const { listenPort } = require("./utils/listenPort");
 const config = require("./config");
