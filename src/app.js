@@ -8,6 +8,7 @@ const cookieParser = require("cookie-parser");
 const authRoutes = require("./routes/authRouter");
 const feedRoutes = require("./routes/feedRouter");
 const profileRoutes = require("./routes/profileRouter");
+const connectionRequestRoutes = require("./routes/connectionRequestRouter");
 
 const app = express();
 app.use(express.json());
@@ -20,6 +21,7 @@ app.get("/", (req, res) => res.send("Server is running"));
 app.use("/api/auth", authRoutes);
 app.use("/api/feed", feedRoutes);
 app.use("/api/profile", profileRoutes);
+app.use("/api/connection", connectionRequestRoutes);
 
 const startServer = async () => {
   try {
